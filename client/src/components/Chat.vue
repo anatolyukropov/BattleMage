@@ -6,7 +6,7 @@
         <div class="input-wrapper">
             <textarea
                 ref="input"
-                @keydown.enter="test"
+                @keydown.enter="sendMessage"
                 class="chat__input"
                 type="text"
                 v-model="msg"
@@ -18,7 +18,8 @@
 </template>
 
 <script>
-const autosize = require('autosize')
+const autosize = require('autosize');
+
 export default {
     name: 'HelloWorld',
     data: function() {
@@ -30,7 +31,8 @@ export default {
         autosize(this.$refs.input)
     },
     methods: {
-        test() {
+        sendMessage() {
+            this.$socket.send(this.msg);
             this.msg = ''
         },
     },

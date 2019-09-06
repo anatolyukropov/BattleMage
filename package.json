@@ -33,7 +33,9 @@
     "log4js": "^5.1.0",
     "mysql": "^2.17.1",
     "spdy": "^4.0.1",
-    "util": "^0.12.1"
+    "util": "^0.12.1",
+    "uuid": "^3.3.3",
+    "ws": "^7.1.2"
   },
   "homepage": "https://github.com/anatolyukropov/BattleMage.git#readme",
   "devDependencies": {
