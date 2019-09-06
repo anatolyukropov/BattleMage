@@ -1,3 +1,4 @@
+require('dotenv').config(); // подключаем перемынные .env
 const express       = require('express'),
     bodyParser      = require('body-parser'),
     path            = require('path'),
@@ -8,13 +9,17 @@ const express       = require('express'),
     sessionStore    = require('./config/mysql'),
     logger          = require('./config/logger'),
     app             = express(),
+    http            = require('http'),
     spdy            = require('spdy'),
     uuid            = require('uuid'),
-  //  wss             = require('./config/webSocket'),
-    options         = require('./config/ssl');
-const WebSocket = require('ws');
+    wss             = require('./config/webSocket'),
+    options         = require('./config/ssl'),
+    PORT = process.env.PORT || 3000,
+    sslPORT = process.env.SSL_PORT || 443,
+    sslServer = spdy.createServer(options, app),
+    server = http.createServer(app);
 
-require('dotenv').config({path : './.env'}); // подключаем перемынные .env
+
 
 //мидлваре для работы Vue Router in History mode
 app.use(history());
@@ -81,42 +86,15 @@ app.delete('/logout', function(request, response) {
     });
 });
 
-app.get('*', (req, res) => {
-    res
-        .status(200)
-        .json({message: 'ok'})
-})
-
-const PORT = process.env.PORT || 4000;
-const server = spdy.createServer(options, app);
-
-const wss = new WebSocket.Server({ server });
-
 server.on('upgrade', function(request, socket, head) {
-    logger.info('Parsing session from request...');
-
     sessionParser(request, {}, () => {
         if (!request.session.userId) {
             socket.destroy();
             return;
         }
-
-        logger.info('Session is parsed!');
-
         wss.handleUpgrade(request, socket, head, function(ws) {
             wss.emit('connection', ws, request);
         });
-    });
-});
-
-wss.on('connection', function(ws, request) {
-    ws.on('message', function(message) {
-        //
-        // Here we can now use session parameters.
-        //
-        logger.info(
-            `Received message ${message} from user ${request.session.userId}`
-        );
     });
 });
 
@@ -125,7 +103,15 @@ server.listen(PORT, (error) => {
         logger.error(error)
         return process.exit(1)
     } else {
-        logger.info('Listening on port: ' + PORT + '.')
+        logger.info('HTTP Listening on port: ' + PORT + '.')
+    }
+});
+sslServer.listen(sslPORT, (error) => {
+    if (error) {
+        logger.error(error)
+        return process.exit(1)
+    } else {
+        logger.info('HTTPS Listening on port: ' + sslPORT + '.')
     }
 });
 //запускаем сервер

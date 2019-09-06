@@ -8,16 +8,15 @@
 </template>
 
 <script>
+
 export default {
     name: 'navBar',
     methods: {
-        async login() {
-            let res = await this.$http.post('/login');
-            console.log(res);
+        login() {
+            this.$http.post('/login');
         },
-        async logout() {
-            let res = await this.$http.delete('/logout');
-            console.log(res);
+        logout() {
+            this.$http.delete('/logout');
         },
     },
 };
