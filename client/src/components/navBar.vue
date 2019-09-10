@@ -2,21 +2,31 @@
     <div class="nav">
         <router-link class="nav__link" to="/">Home</router-link>
         <router-link class="nav__link" to="/Profile">Profile</router-link>
-        <button class="nav__link" @click="login">Login</button>
-        <button class="nav__link" @click="logout">Logout</button>
+        <button v-if="!isLoggedIn" class="nav__link" @click="login">
+            Login
+        </button>
+        <button v-if="isLoggedIn" class="nav__link" @click="logout">
+            Logout
+        </button>
     </div>
 </template>
 
 <script>
-
 export default {
     name: 'navBar',
+    data: function() {
+        return {
+            isLoggedIn: false,
+        };
+    },
     methods: {
-        login() {
-            this.$http.post('/login');
+        async login() {
+            let rez = await this.$http.post('/login');
+            if (rez.data.status === 'OK') this.isLoggedIn = true;
         },
         logout() {
             this.$http.delete('/logout');
+            this.isLoggedIn = false;
         },
     },
 };

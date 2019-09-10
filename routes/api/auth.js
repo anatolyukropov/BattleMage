@@ -12,13 +12,13 @@ router.post('/login', function(req, res) {
     logger.info(`Updating session for user ${id}`);
     req.session.userId = id;
     req.session.userName = 'Vasya';
-    res.send({ result: 'OK', message: 'Session updated' });
+    res.send({ status: 'OK', message: 'Session updated' });
 });
 
 router.delete('/logout', function(request, response) {
     logger.info('Destroying session');
     request.session.destroy(function() {
-        response.send({ result: 'OK', message: 'Session destroyed' });
+        response.send({ status: 'OK', message: 'Session destroyed' });
     });
 });
 
