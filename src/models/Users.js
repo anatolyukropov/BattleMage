@@ -4,12 +4,16 @@ const pool = require('../../config/mysql.js'),
         logger.error(err);
     };
 
-const DeathMageCards = {
-    getAll: async function() {
+const User = {
+    get: function(userName) {
         return new Promise(async (resolve, reject) => {
-            resolve(await pool.query(`SELECT * FROM deathmagecards`));
+            resolve(
+                await pool.query(
+                    `SELECT * FROM users WHERE username = ${userName}`
+                )
+            );
         }).catch(errHandler);
     },
 };
 
-module.exports = DeathMageCards;
+module.exports = User;

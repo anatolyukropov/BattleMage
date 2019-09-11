@@ -37,7 +37,7 @@ export default {
             messageAll: [],
         };
     },
-    mounted() {
+    async mounted() {
         autosize(this.$refs.input);
         this.$options.sockets.onmessage = data => this.messageRecive(data);
     },
@@ -125,14 +125,13 @@ export default {
     word-wrap: break-word;
 }
 /*.message:after {*/
-    /*content: ' ';*/
-    /*display: block;*/
-    /*height: 1px;*/
-    /*position: absolute;*/
-    /*bottom: 0;*/
-    /*left: 0;*/
-    /*min-width: 100%;*/
-    /*background-color: #FFB300;*/
+/*content: ' ';*/
+/*display: block;*/
+/*height: 1px;*/
+/*position: absolute;*/
+/*bottom: 0;*/
+/*left: 0;*/
+/*min-width: 100%;*/
+/*background-color: #FFB300;*/
 /*}*/
-
 </style>

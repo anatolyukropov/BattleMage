@@ -63,8 +63,10 @@ app.get('/', (req, res) => {
 });
 
 const auth = require('./routes/api/auth');
-app.use('/', auth);
+const rooms = require('./routes/api/rooms');
 
+app.use('/', auth);
+app.use('/rooms', rooms);
 
 server.on('upgrade', function(request, socket, head) {
     sessionParser(request, {}, () => {
