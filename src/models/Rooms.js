@@ -9,7 +9,7 @@ const Rooms = {
         return new Promise(async (resolve, reject) => {
             resolve(
                 await pool.query(
-                    `SELECT * FROM rooms LEFT JOIN players using(room_id)`
+                    `SELECT * FROM rooms LEFT JOIN players using(room_id) order by room_id`
                 )
             );
         }).catch(errHandler);

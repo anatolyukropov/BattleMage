@@ -66,6 +66,7 @@ export default {
     flex-direction: column;
     justify-content: flex-end;
     width: 30%;
+    background-color: #c6ff00;
 }
 .input-wrapper {
     background-color: #eeeeee;
@@ -110,7 +111,7 @@ export default {
 }
 .message {
     position: relative;
-    margin: 0 30px;
+    margin: 10px 30px;
     padding: 10px 0;
     line-height: 16px;
 }

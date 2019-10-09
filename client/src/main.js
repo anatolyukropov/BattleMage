@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import store from './store';
+import store from './store/store';
 import axios from 'axios';
 import ws from 'vue-native-websocket';
 
@@ -13,7 +13,6 @@ Vue.use(ws, 'ws://localhost:4000', {
 });
 
 Vue.config.productionTip = false;
-console.log(process.env.VUE_APP_API_DEV);
 // настраиваем стандартный vue hhtp модуль для запросов апи
 Vue.prototype.$http = axios;
 Vue.prototype.$http.defaults.withCredentials = true;

@@ -3,6 +3,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     path = require('path'),
     cors = require('cors'),
+    passport = require('passport'),
     history = require('connect-history-api-fallback'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
@@ -46,6 +47,13 @@ app.use(
 // парсер cookie
 app.use(cookieParser());
 
+//Инициализируем passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+//Подключаем стратегию passport_jwt
+require('./config/passport')(passport);
+
 app.use(
     cors({
         origin: ['http://localhost:8080'],
@@ -59,7 +67,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.render('/public/index.html')
+    res.render('/public/index.html');
 });
 
 const auth = require('./routes/api/auth');

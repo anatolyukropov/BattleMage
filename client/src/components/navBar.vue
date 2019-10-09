@@ -1,7 +1,12 @@
 <template>
     <div class="nav">
         <router-link class="nav__link" to="/">Home</router-link>
-        <router-link class="nav__link" to="/Profile">Profile</router-link>
+        <router-link class="nav__link" to="/Profile" v-if="isLoggedIn"
+            >Profile</router-link
+        >
+        <router-link v-if="!isLoggedIn" class="nav__link" to="/register"
+            >Register</router-link
+        >
         <button v-if="!isLoggedIn" class="nav__link" @click="login">
             Login
         </button>
@@ -16,16 +21,25 @@ export default {
     name: 'navBar',
     data: function() {
         return {
-            isLoggedIn: false,
+            isLoggedIn: localStorage.getItem('isLoggedIn') || false,
         };
     },
     methods: {
         async login() {
-            let rez = await this.$http.post('/login');
-            if (rez.data.status === 'OK') this.isLoggedIn = true;
+            try {
+                await this.$http.post('/login', {
+                    username: 'test',
+                    password: '123',
+                });
+                localStorage.setItem('isLoggedIn', true);
+                this.isLoggedIn = true;
+            } catch (e) {
+                alert(e.response.data.msg);
+            }
         },
         logout() {
-            this.$http.delete('/logout');
+            this.$http.delete('/logOut');
+            localStorage.setItem('isLoggedIn', false);
             this.isLoggedIn = false;
         },
     },
@@ -51,12 +65,12 @@ export default {
     color: white;
     display: block;
     text-decoration: none;
-    font-size: 18px;
-    line-height: 3em;
+    line-height: 60px !important;
     padding: 0 20px;
     outline: 0;
     border: none;
     background-color: transparent;
+    font: 400 18px Arial;
 }
 .nav__link:hover {
     background-color: #e65100;
