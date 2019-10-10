@@ -2,20 +2,47 @@ import axios from 'axios';
 
 export default {
     state: {
-        user: {},
+        isLoggedIn: false,
+        user: {
+            userName: '',
+        },
     },
     mutations: {
-        auth_success(state, { user }) {
-            state.user = user;
-            localStorage.setItem('isLoggedIn', token);
-        }
+        auth(state, { isLoggedIn }) {
+            state.isLoggedIn = JSON.parse(isLoggedIn);
+            localStorage.setItem('isLoggedIn', isLoggedIn);
+        },
+        setUser(state, user) {
+            state.user.userName = user;
+            localStorage.setItem('userName', user);
+        },
     },
     actions: {
-
+        logIn: function({ commit }, { username, password }) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .post(`/login`, { username, password })
+                    .then(function(response) {
+                        if (response.data.success) {
+                            //устанавливаем токен в Локальное хранилище
+                            commit('auth', { isLoggedIn: true });
+                            commit('setUser', response.data.username);
+                        }
+                        resolve(response);
+                    })
+                    .catch(function(err) {
+                        reject(err);
+                    });
+            });
+        },
+        logOut: function({ commit }) {
+            axios.delete('/logOut');
+            commit('auth', { isLoggedIn: false });
+            commit('setUser', '');
+            return;
+        },
     },
     getters: {
-        isLoggedIn: state => !!state.token,
-        authState: state => state.status,
-        USER: state => state.user,
+        isLoggedIn: state => state.isLoggedIn,
     },
 };

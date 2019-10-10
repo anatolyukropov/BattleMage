@@ -29,7 +29,8 @@ const express = require('express'),
     bcrypt = require('bcryptjs'),
     passport = require('passport'),
     logger = require('../../config/logger'),
-    User = require('../../src/models/Users');
+    User = require('../../src/models/Users'),
+    wsOnLogin = require('../../src/webSocket/onLogin');
 
 //подписываем сессию
 passport.serializeUser((user, done) => {
@@ -75,8 +76,7 @@ router.post('/login', [
     function(user, res, next) {
         res.status(200).json({
             success: true,
-            token: true,
-            user: user.user.dataValues,
+            username: user.user.username,
         });
     },
     function(err, req, res, next) {

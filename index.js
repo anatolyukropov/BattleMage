@@ -78,10 +78,12 @@ app.use('/rooms', rooms);
 
 server.on('upgrade', function(request, socket, head) {
     sessionParser(request, {}, () => {
-        if (!request.session.userId) {
+        if (!request.session.passport) {
             //socket.destroy();
             request.session.userName = 'Гость';
             //return;
+        } else {
+            request.session.userName = request.session.passport.user
         }
         wss.handleUpgrade(request, socket, head, function(ws) {
             wss.emit('connection', ws, request);

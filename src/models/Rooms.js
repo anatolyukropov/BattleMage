@@ -30,7 +30,7 @@ const Rooms = {
             resolve(
                 await pool.query(`INSERT INTO players (room_id, name)
                             SELECT ${roomId}, '${userName}'
-                            WHERE  (select count(*) from players where room_id=${roomId}) < (select maxplayers from rooms where room_id = ${roomId})`)
+                            WHERE  (select count(*) from players where room_id='${roomId}') < (select maxplayers from rooms where room_id = '${roomId}')`)
             );
         }).catch(errHandler);
     },
@@ -44,7 +44,7 @@ const Rooms = {
     deleteRoom: function(roomId) {
         return new Promise(async (resolve, reject) => {
             resolve(
-                await pool.query(`DELETE from rooms where room_id = ${roomId}`)
+                await pool.query(`DELETE from rooms where room_id = '${roomId}'`)
             );
         }).catch(errHandler);
     },

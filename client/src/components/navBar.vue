@@ -7,41 +7,30 @@
         <router-link v-if="!isLoggedIn" class="nav__link" to="/register"
             >Register</router-link
         >
-        <button v-if="!isLoggedIn" class="nav__link" @click="login">
+        <router-link v-if="!isLoggedIn" class="nav__link" to="/login">
             Login
-        </button>
-        <button v-if="isLoggedIn" class="nav__link" @click="logout">
+        </router-link>
+        <button v-if="isLoggedIn" class="nav__link" @click="logOut">
             Logout
         </button>
     </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 export default {
     name: 'navBar',
     data: function() {
-        return {
-            isLoggedIn: localStorage.getItem('isLoggedIn') || false,
-        };
+        return {};
+    },
+    // смешиваем результат mapState с внешним объектом
+    computed: {
+        ...mapState({
+            isLoggedIn: state => state.Auth.isLoggedIn,
+        }),
     },
     methods: {
-        async login() {
-            try {
-                await this.$http.post('/login', {
-                    username: 'test',
-                    password: '123',
-                });
-                localStorage.setItem('isLoggedIn', true);
-                this.isLoggedIn = true;
-            } catch (e) {
-                alert(e.response.data.msg);
-            }
-        },
-        logout() {
-            this.$http.delete('/logOut');
-            localStorage.setItem('isLoggedIn', false);
-            this.isLoggedIn = false;
-        },
+        ...mapActions(['logOut']),
     },
 };
 </script>

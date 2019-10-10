@@ -4,13 +4,10 @@ const User = require('../src/models/Users'),
     bcrypt = require('bcryptjs');
 
 function authenticationMiddleware() {
-    console.log('1')
     return function(req, res, next) {
         if (req.isAuthenticated()) {
-            console.log('2')
             return next();
         }
-        console.log('3')
         res.status(401).json({
             msg: 'Вы не авторизованы',
         });
