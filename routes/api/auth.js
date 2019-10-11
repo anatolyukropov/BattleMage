@@ -6,6 +6,18 @@ const express = require('express'),
     User = require('../../src/models/Users'),
     wss = require('../../config/webSocket');
 
+wsClose = function(req) {
+    logger.error('req.sessionID', req.sessionID);
+    wss.clients.forEach(function each(client) {
+        logger.error('client.wsUid', client.session);
+        if (client.wsUid === req.sessionID) {
+            logger.info(`${client.userName} socket is close`);
+            client.close();
+        }
+        return;
+    });
+};
+
 //подписываем сессию
 passport.serializeUser((user, done) => {
     done(null, user.username);
@@ -47,10 +59,11 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', [
     passport.authenticate('local', { failWithError: true }),
-    function(user, res, next) {
+    function(req, res, next) {
+        wsClose(req);
         res.status(200).json({
             success: true,
-            username: user.user.username,
+            username: req.user.username,
         });
     },
     function(err, req, res, next) {
@@ -63,12 +76,7 @@ router.post('/login', [
 ]);
 
 router.delete('/logOut', passport.authenticationMiddleware(), (req, res) => {
-    wss.clients.forEach(function each(client) {
-        if (client.userName === req.session.passport.user) {
-           client.close();
-        }
-        return
-    });
+    wsClose(req);
     req.session.destroy();
     res.end;
 });

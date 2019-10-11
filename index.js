@@ -18,6 +18,7 @@ const express = require('express'),
     sslPORT = process.env.SSL_PORT || 443,
     sslServer = spdy.createServer(options, app),
     uid = require('uid'),
+    cookie = require('cookie');
     server = http.createServer(app);
 
 //мидлваре для работы Vue Router in History mode
@@ -64,12 +65,30 @@ app.use(
     })
 );
 
+//ставим cookie чтобы различать гостей
+app.use(function(req, res, next) {
+    // проверяем установлен ли cookie
+    let cookie = req.cookies['wsCookie'];
+
+    if (cookie === undefined) {
+        // no: set a new cookie
+        res.cookie('wsCookie', uid(15), {
+            maxAge: 900000,
+            httpOnly: true,
+        });
+        logger.info('cookie created successfully');
+    } else {
+        //куки уже есть менять не надо
+        logger.info('cookie exists', cookie);
+    }
+    next();
+});
+
 // Указывает директирою с общими файлами
 app.use(express.static(path.join(__dirname, 'public')));
 
+// отдаём главную страницу
 app.get('/', (req, res) => {
-    let uid = uid(10)
-    res.cookie('uid',{ expires: new Date(Date.now() + 900000), httpOnly: true, id: uid });
     res.render('/public/index.html');
 });
 
@@ -80,17 +99,23 @@ app.use('/', auth);
 app.use('/rooms', rooms);
 
 server.on('upgrade', function(request, socket, head) {
-    sessionParser(request, {}, () => {
-        if (!request.session.passport) {
+    sessionParser(request, {}, () => {     // парсим сессию запроса
+        request.session.wsUid = cookie.parse(request.headers.cookie).wsCookie;
+        // Устанавливаем Уникальный идентификатор из cookie в сессию сокета
+
+        if (!request.session.passport) {    // проверяем авторизован ли пользователь
             //socket.destroy();
-            logger.log(request.cookie)
-            request.session.userName = 'Гость';
+            request.session.userName = 'Гость_' + request.session.wsUid;  //записываем в сессию ник гостя
             //return;
         } else {
-            request.session.userName = request.session.passport.user;
+            request.session.userName = request.session.passport.user;     //записываем в сессию ник игрока
         }
+
         wss.handleUpgrade(request, socket, head, function(ws) {
+            ws.userName = request.session.userName;  // записываем в сокет ник игрока
+            ws.wsUid = request.session.wsUid;        // записываем в сокет уникальный идентификатор
             wss.emit('connection', ws, request);
+            // создаём сокет(подключаем клиента)
         });
     });
 });
