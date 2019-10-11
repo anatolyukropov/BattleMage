@@ -17,6 +17,7 @@ const express = require('express'),
     PORT = process.env.PORT || 3000,
     sslPORT = process.env.SSL_PORT || 443,
     sslServer = spdy.createServer(options, app),
+    uid = require('uid'),
     server = http.createServer(app);
 
 //мидлваре для работы Vue Router in History mode
@@ -56,7 +57,7 @@ require('./config/passport')(passport);
 
 app.use(
     cors({
-        origin: ['http://localhost:8080'],
+        origin: ['http://10.98.16.42:8080'],
         methods: ['GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'],
         credentials: true,
         preflightContinue: true, // enable set cookie
@@ -67,6 +68,8 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
+    let uid = uid(10)
+    res.cookie('uid',{ expires: new Date(Date.now() + 900000), httpOnly: true, id: uid });
     res.render('/public/index.html');
 });
 
@@ -80,16 +83,19 @@ server.on('upgrade', function(request, socket, head) {
     sessionParser(request, {}, () => {
         if (!request.session.passport) {
             //socket.destroy();
+            logger.log(request.cookie)
             request.session.userName = 'Гость';
             //return;
         } else {
-            request.session.userName = request.session.passport.user
+            request.session.userName = request.session.passport.user;
         }
         wss.handleUpgrade(request, socket, head, function(ws) {
             wss.emit('connection', ws, request);
         });
     });
 });
+
+require('./src/webSocket/onConnection')(wss);
 
 server.listen(PORT, error => {
     if (error) {

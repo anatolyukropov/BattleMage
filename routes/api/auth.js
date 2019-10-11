@@ -1,36 +1,10 @@
-// const express = require('express'),
-//     uuid = require('uuid'),
-//     logger = require('../../config/logger'),
-//     router = express.Router();
-//
-// router.post('/login', function(req, res) {
-//     //
-//     // "Log in" user and set userId to session.
-//     //
-//     const id = uuid.v4();
-//
-//     logger.info(`Updating session for user ${id}`);
-//     req.session.userId = id;
-//     req.session.userName = 'Vasya';
-//     res.send({ status: 'OK', message: 'Session updated' });
-// });
-//
-// router.delete('/logout', function(request, response) {
-//     logger.info('Destroying session');
-//     request.session.destroy(function() {
-//         response.send({ status: 'OK', message: 'Session destroyed' });
-//     });
-// });
-//
-// module.exports = router;
-
 const express = require('express'),
     router = express.Router(),
     bcrypt = require('bcryptjs'),
     passport = require('passport'),
     logger = require('../../config/logger'),
     User = require('../../src/models/Users'),
-    wsOnLogin = require('../../src/webSocket/onLogin');
+    wss = require('../../config/webSocket');
 
 //подписываем сессию
 passport.serializeUser((user, done) => {
@@ -89,6 +63,12 @@ router.post('/login', [
 ]);
 
 router.delete('/logOut', passport.authenticationMiddleware(), (req, res) => {
+    wss.clients.forEach(function each(client) {
+        if (client.userName === req.session.passport.user) {
+           client.close();
+        }
+        return
+    });
     req.session.destroy();
     res.end;
 });
