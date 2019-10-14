@@ -7,6 +7,8 @@
 
 <script>
 import navBar from './components/navBar';
+//import ws from './webSocket/wsStart'
+
 export default {
     components: { navBar },
     created() {
@@ -15,7 +17,7 @@ export default {
                 isLoggedIn: localStorage.getItem('isLoggedIn'),
             });
             if (localStorage.getItem('userName')) {
-                this.$store.commit('setUser', localStorage.getItem('userName'))
+                this.$store.commit('setUser', localStorage.getItem('userName'));
             } else {
                 this.$store.commit('auth', {
                     isLoggedIn: false,

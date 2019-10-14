@@ -17,7 +17,7 @@ const express = require('express'),
     PORT = process.env.PORT || 3000,
     sslPORT = process.env.SSL_PORT || 443,
     sslServer = spdy.createServer(options, app),
-    uid = require('uid'),
+    uuid = require('uuid/v1'),
     cookie = require('cookie');
     server = http.createServer(app);
 
@@ -68,11 +68,11 @@ app.use(
 //ставим cookie чтобы различать гостей
 app.use(function(req, res, next) {
     // проверяем установлен ли cookie
-    let cookie = req.cookies['wsCookie'];
+    let cookie = req.cookies['wsUid'];
 
     if (cookie === undefined) {
         // no: set a new cookie
-        res.cookie('wsCookie', uid(15), {
+        res.cookie('wsUid', uuid(), {
             maxAge: 900000,
             httpOnly: true,
         });
@@ -100,12 +100,17 @@ app.use('/rooms', rooms);
 
 server.on('upgrade', function(request, socket, head) {
     sessionParser(request, {}, () => {     // парсим сессию запроса
-        request.session.wsUid = cookie.parse(request.headers.cookie).wsCookie;
-        // Устанавливаем Уникальный идентификатор из cookie в сессию сокета
+        if (request.headers.cookie &&  cookie.parse(request.headers.cookie).wsUid) {
+            request.session.wsUid = cookie.parse(request.headers.cookie).wsUid;
+            // Устанавливаем Уникальный идентификатор из cookie в сессию сокета
+        } else {
+            socket.destroy();
+            return
+        }
 
         if (!request.session.passport) {    // проверяем авторизован ли пользователь
             //socket.destroy();
-            request.session.userName = 'Гость_' + request.session.wsUid;  //записываем в сессию ник гостя
+            request.session.userName = 'Гость_' + request.session.wsUid.split('').splice(0,4).join('');  //записываем в сессию ник гостя
             //return;
         } else {
             request.session.userName = request.session.passport.user;     //записываем в сессию ник игрока

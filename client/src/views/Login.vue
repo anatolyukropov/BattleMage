@@ -44,8 +44,7 @@ export default {
                     username: this.username,
                     password: this.password,
                 })
-                .then(res => {
-                    console.log(res);
+                .then(() => {
                     this.$router.push('/');
                 });
         },

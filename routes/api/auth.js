@@ -4,13 +4,13 @@ const express = require('express'),
     passport = require('passport'),
     logger = require('../../config/logger'),
     User = require('../../src/models/Users'),
+    cookie = require('cookie'),
     wss = require('../../config/webSocket');
 
 wsClose = function(req) {
-    logger.error('req.sessionID', req.sessionID);
+    let wsUid = cookie.parse(req.headers.cookie).wsUid;
     wss.clients.forEach(function each(client) {
-        logger.error('client.wsUid', client.session);
-        if (client.wsUid === req.sessionID) {
+        if (client.wsUid === wsUid) {
             logger.info(`${client.userName} socket is close`);
             client.close();
         }
@@ -78,7 +78,9 @@ router.post('/login', [
 router.delete('/logOut', passport.authenticationMiddleware(), (req, res) => {
     wsClose(req);
     req.session.destroy();
-    res.end;
+    res.status(200).json({
+        success: true,
+    });
 });
 
 module.exports = router;

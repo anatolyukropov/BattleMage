@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API from '../../api';
 
 export default {
     state: {
@@ -18,7 +19,7 @@ export default {
         },
     },
     actions: {
-        logIn: function({ commit }, { username, password }) {
+        /*logIn: function({ commit }, { username, password }) {
             return new Promise((resolve, reject) => {
                 axios
                     .post(`/login`, { username, password })
@@ -34,9 +35,26 @@ export default {
                         reject(err);
                     });
             });
-        },
-        logOut: function({ commit }) {
+        },*/
+        /*logOut: function({ commit }) {
             axios.delete('/logOut');
+            commit('auth', { isLoggedIn: false });
+            commit('setUser', '');
+            return;
+        },*/
+        logIn: ({ commit }, data) => {
+            return new Promise(async resolve => {
+                let response = await API.auth.logIn(data);
+                if (response.success) {
+                    //устанавливаем токен в Локальное хранилище
+                    commit('auth', { isLoggedIn: true });
+                    commit('setUser', response.username);
+                }
+                resolve(response);
+            });
+        },
+        logOut: ({ commit }) => {
+            API.auth.logOut();
             commit('auth', { isLoggedIn: false });
             commit('setUser', '');
             return;
