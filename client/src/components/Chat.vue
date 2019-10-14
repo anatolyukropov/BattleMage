@@ -28,6 +28,7 @@
 
 <script>
 const autosize = require('autosize');
+import { mapState } from 'vuex';
 
 export default {
     name: 'HelloWorld',
@@ -41,11 +42,19 @@ export default {
         autosize(this.$refs.input);
         this.$options.sockets.onmessage = data => this.messageRecive(data);
     },
+    computed: {
+        ...mapState({
+            user: state => state.Auth.user.userName,
+            wsStatus: state => state.webSocket.socket.isConnected,
+        }),
+    },
     methods: {
         messageSend() {
-            this.$socket.send(this.msg);
-            this.messageAll.push({ from: 'me: ', text: this.msg });
-            this.msg = '';
+            if (this.wsStatus) {
+                this.$socket.send(this.msg);
+                this.messageAll.push({ from: this.user, text: this.msg });
+                this.msg = '';
+            }
         },
         messageRecive: function(data) {
             this.messageAll.push(JSON.parse(data.data));
