@@ -57,7 +57,7 @@ export default {
                     password: this.password,
                     confirmPassword: this.confirmPassword,
                 })
-                .then(res => {
+                .then(() => {
                     this.$router.push('/login');
                 })
                 .catch(error => alert(error.response.data.msg));

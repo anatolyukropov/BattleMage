@@ -59,5 +59,4 @@ export default {
     background-color: #286090;
     border-color: #204d74;
 }
-
 </style>

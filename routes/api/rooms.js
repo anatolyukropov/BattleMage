@@ -21,7 +21,7 @@ router.put('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    let rez = await Rooms.create(req.body.maxplayers, req.body.userName);
+    let rez = await Rooms.create(req.body);
     res.status(200).json({
         success: true,
         response: rez,

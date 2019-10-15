@@ -14,13 +14,13 @@ const Rooms = {
             );
         }).catch(errHandler);
     },
-    create: async function(maxplayers, name) {
+    create: async function({maxPlayers, userName}) {
         return new Promise(async (resolve, reject) => {
             let createRoom = await pool.query(
-                `INSERT INTO rooms SET maxplayers = '${maxplayers}'`
+                `INSERT INTO rooms SET maxplayers = '${maxPlayers}'`
             );
             let addPlayer = await pool.query(
-                `INSERT INTO players SET room_id = '${createRoom.insertId}', name = '${name}'`
+                `INSERT INTO players SET room_id = '${createRoom.insertId}', name = '${userName}'`
             );
             resolve({ createRoom, addPlayer });
         }).catch(errHandler);

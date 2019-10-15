@@ -1,17 +1,17 @@
 <template>
     <div class="nav">
-        <router-link class="nav__link" to="/">Home</router-link>
+        <router-link class="nav__link" to="/">Главная</router-link>
         <router-link class="nav__link" to="/Profile" v-if="isLoggedIn"
-            >Profile</router-link
+            >Профиль</router-link
         >
         <router-link v-if="!isLoggedIn" class="nav__link" to="/register"
-            >Register</router-link
+            >Регистрация</router-link
         >
         <router-link v-if="!isLoggedIn" class="nav__link" to="/login">
-            Login
+            Вход
         </router-link>
         <button v-if="isLoggedIn" class="nav__link" @click="logOut">
-            Logout
+            Выход
         </button>
     </div>
 </template>
@@ -42,19 +42,19 @@ export default {
     margin: 0;
 }
 .nav {
-    min-height: 60px;
+    min-height: 41px;
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: stretch;
     justify-content: flex-end;
-    background-color: #0277BD;
+    background-color: #4a76a8;
 }
 .nav__link {
     color: white;
     display: block;
+    line-height: 41px !important;
     text-decoration: none;
-    line-height: 60px !important;
     padding: 0 20px;
     outline: 0;
     border: none;
@@ -62,12 +62,12 @@ export default {
     font: 400 18px Arial;
 }
 .nav__link:hover {
-    background-color: #01579B;
+    background-color: #01579b;
 }
 .router-link-exact-active {
-    background-color: #01579B;
+    background-color: #01579b;
 }
 .nav__link:focus {
-    background-color: #01579B
+    background-color: #01579b;
 }
 </style>

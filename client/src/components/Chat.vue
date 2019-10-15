@@ -62,7 +62,7 @@ export default {
             if (this.wsStatus && this.msg.length >= 1) {
                 this.$socket.send(this.msg);
                 this.messageAll.push({
-                    from: this.user || 'Вы',
+                    from: this.user+':' || 'Вы',
                     text: this.msg,
                 });
                 this.msg = '';
@@ -77,38 +77,37 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
 .chat {
     border-radius: 4px;
-    margin: 10px;
+    margin: 10px 100px 10px 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     width: 30%;
-    background-color: #e1f5fe;
+    background-color: #ffffff;
 }
 .input-wrapper {
-    background-color: #eeeeee;
+    background-color: #fafbfc;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow-y: hidden;
-    min-height: 90px;
+    min-height: 62px;
     max-height: 150px;
+    padding-left: 26px;
+    padding-right: 0px;
+    border-top: 0;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
 }
 .chat__input {
-    padding-top: 10px;
+    padding: 9px 0 10px 0;
     text-align: center;
     outline: 0;
-    min-height: 36px;
+    max-height: 36px;
     width: 80%;
     resize: none;
-    max-height: 100px;
     overflow-y: hidden;
     overflow-x: hidden;
     border-radius: 6px;
@@ -117,12 +116,15 @@ export default {
     word-wrap: break-word;
     box-sizing: border-box;
     white-space: normal;
-    font-size: 20px;
+    font-size: 13px;
     opacity: 1;
 }
 .chat__input:focus::placeholder {
     opacity: 0;
+    font-size: 9px;
+    font-family: 'Raleway';
     transition: opacity 0.3s ease;
+    padding-bottom: 10px;
 }
 .message-wrapper {
     width: 100%;
@@ -130,22 +132,28 @@ export default {
 
 .message-container {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .message {
     position: relative;
     margin: 10px 30px;
     padding: 10px 0;
-    line-height: 16px;
+    line-height: 13px;
+    font-size: 13px;
+    font-weight: 400;
+    font-family: 'Raleway', sans-serif;
+    color: #000;
 }
 .message-from {
-    color: darkblue;
-    font-weight: bold;
-    font-size: 20px;
+    color: #42648b;
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    font-size: 15px;
     width: 100%;
 }
 .message-text {
-    font-size: 20px;
+    font-size: 14px;
+    font-weight: 500;
     word-wrap: break-word;
 }
 /*.message:after {*/
