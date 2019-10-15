@@ -48,7 +48,7 @@ export default {
     flex-direction: row;
     align-items: stretch;
     justify-content: flex-end;
-    background-color: #ff6d00;
+    background-color: #0277BD;
 }
 .nav__link {
     color: white;
@@ -62,9 +62,12 @@ export default {
     font: 400 18px Arial;
 }
 .nav__link:hover {
-    background-color: #e65100;
+    background-color: #01579B;
 }
 .router-link-exact-active {
-    background-color: #bf360c;
+    background-color: #01579B;
+}
+.nav__link:focus {
+    background-color: #01579B
 }
 </style>

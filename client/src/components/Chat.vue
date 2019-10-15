@@ -7,7 +7,9 @@
                     v-for="(message, index) of messageAll"
                     :key="index"
                 >
-                    <span class="message-from">{{ message.from }} </span>
+                    <span class="message-from" @click="messageTO"
+                        >{{ message.from }}
+                    </span>
                     <span class="message-text">{{ message.text }}</span>
                 </p>
             </div>
@@ -21,6 +23,7 @@
                 v-model="msg"
                 name="text"
                 placeholder="введите сообщение"
+                v-elevation="1"
             />
         </div>
     </div>
@@ -49,10 +52,19 @@ export default {
         }),
     },
     methods: {
+        messageTO(e) {
+            this.msg =
+                'to ' +
+                e.target.innerHTML.substring(0, e.target.innerHTML.length - 1) +
+                ':';
+        },
         messageSend() {
-            if (this.wsStatus) {
+            if (this.wsStatus && this.msg.length >= 1) {
                 this.$socket.send(this.msg);
-                this.messageAll.push({ from: this.user, text: this.msg });
+                this.messageAll.push({
+                    from: this.user || 'Вы',
+                    text: this.msg,
+                });
                 this.msg = '';
             }
         },
@@ -71,11 +83,13 @@ export default {
     margin: 0;
 }
 .chat {
+    border-radius: 4px;
+    margin: 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     width: 30%;
-    background-color: #c6ff00;
+    background-color: #e1f5fe;
 }
 .input-wrapper {
     background-color: #eeeeee;

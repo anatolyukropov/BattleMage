@@ -32,7 +32,7 @@ export default {
         },
     },
     actions: {
-        sendMessage: function(context, message) {
+        sendMessage: (context, message) => {
             Vue.prototype.$socket.send(message);
         },
     },

@@ -2,8 +2,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
 import router from './router';
+import elevation from './directives/elevation'
 import http from './api/axiosConfig'; //импортируем настроенный axios
 require('./webSocket/wsStart'); //запускаем настроенный webSocket
+
+Vue.directive('elevation', elevation);
 
 Vue.config.productionTip = false;
 // настраиваем стандартный vue hhtp модуль для запросов апи
